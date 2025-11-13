@@ -915,34 +915,6 @@ else if (pb1st.wasClicked || pb1st.wasShortPressed)
         needRedraw = true;
     }
 }
-      else if(clickHandler(currentCmd, pb1st.wasShortPressed))
-      {
-        // Command handled, redraw screen
-        needRedraw = true;
-
-        // EiBi can take long time, renew the timestamps
-        elapsedSleep = elapsedCommand = currentTime = millis();
-      }
-      else if(currentCmd != CMD_NONE)
-      {
-        // Deactivate modal mode
-        currentCmd = CMD_NONE;
-        needRedraw = true;
-      }
-      else if(pb1st.wasShortPressed)
-      {
-        // Volume shortcut (only active in VFO mode)
-        currentCmd = CMD_VOLUME;
-        needRedraw = true;
-      }
-      else
-      {
-        // Activate menu
-        currentCmd = CMD_MENU;
-        needRedraw = true;
-      }
-    }
-  }
 
   // Deactivate push and rotate mode
   if(!pb1st.isPressed && pushAndRotate)
