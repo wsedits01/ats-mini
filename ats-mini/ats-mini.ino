@@ -859,69 +859,62 @@ void loop()
       elapsedSleep = elapsedCommand = currentTime = millis();
 
     }
-    else if(pb1st.wasClicked || pb1st.wasShortPressed)
+else if (pb1st.wasClicked || pb1st.wasShortPressed)
 {
-      // Encoder click or short press
-      // Reset timeouts
-      elapsedSleep = elapsedCommand = currentTime;
+    // Encoder click or short press
+    elapsedSleep = elapsedCommand = currentTime;
 
-      // If in locked/unlocked sleep mode
-      if(sleepOn())
-      {
-        // If sleep timeout is enabled, exit it via button press of any duration
-        if(currentSleep)
+    // Locked/unlocked sleep mode
+    if (sleepOn())
+    {
+        if (currentSleep)
         {
-          sleepOn(false);
-          needRedraw = true;
+            sleepOn(false);
+            needRedraw = true;
         }
-        else if(sleepModeIdx == SLEEP_UNLOCKED)
+        else if (sleepModeIdx == SLEEP_UNLOCKED)
         {
-          // Allow to adjust the volume in sleep mode (preserve existing behavior)
-          if(pb1st.wasShortPressed && currentCmd == CMD_NONE)
-            currentCmd = CMD_VOLUME;
-          else if(currentCmd == CMD_VOLUME)
-            clickHandler(currentCmd, pb1st.wasShortPressed);
+            if (pb1st.wasShortPressed && currentCmd == CMD_NONE)
+                currentCmd = CMD_VOLUME;
+            else if (currentCmd == CMD_VOLUME)
+                clickHandler(currentCmd, pb1st.wasShortPressed);
 
-          needRedraw = true;
+            needRedraw = true;
         }
-      }
-      // First try existing click handlers (menu items, remote actions, etc.)
-      else if(clickHandler(currentCmd, pb1st.wasShortPressed))
-      {
-        // Command handled, redraw screen
+    }
+
+    // Try existing click handlers (menu items, remote actions, etc.)
+    else if (clickHandler(currentCmd, pb1st.wasShortPressed))
+    {
         needRedraw = true;
-
-        // Some handlers may take long, renew the timestamps
         elapsedSleep = elapsedCommand = currentTime = millis();
-      }
-      else if(currentCmd != CMD_NONE)
-      {
-        // If we are in a modal command, deactivate it (back to default)
+    }
+
+    // Deactivate modal command
+    else if (currentCmd != CMD_NONE)
+    {
         currentCmd = CMD_NONE;
         needRedraw = true;
-      }
-      else if(pb1st.wasShortPressed)
-      {
-        // --- NEW BEHAVIOR: short press toggles FREQUENCY TUNING mode ---
-        // If currently in normal/default mode (volume-on-knob), enter frequency mode.
-        // If currently already in frequency mode, exit back to default.
+    }
+
+    // --- NEW BEHAVIOR: short press toggles frequency tuning mode ---
+    else if (pb1st.wasShortPressed)
+    {
         if (currentCmd != CMD_FREQ)
-        {
-          currentCmd = CMD_FREQ;    // enter tuning mode: encoder now changes frequency
-        }
+            currentCmd = CMD_FREQ;   // enter tuning (knob -> frequency)
         else
-        {
-          currentCmd = CMD_NONE;    // exit tuning mode: encoder goes back to volume
-        }
+            currentCmd = CMD_NONE;   // back to volume
+
         needRedraw = true;
-      }
-      else
-      {
-        // Fallback: open menu (preserve original behavior for plain clicks)
+    }
+
+    // Fallback: open menu
+    else
+    {
         currentCmd = CMD_MENU;
         needRedraw = true;
-      }
     }
+}
       else if(clickHandler(currentCmd, pb1st.wasShortPressed))
       {
         // Command handled, redraw screen
