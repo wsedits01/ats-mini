@@ -863,7 +863,7 @@ else if (pb1st.wasClicked || pb1st.wasShortPressed)
 {
     elapsedSleep = elapsedCommand = currentTime;
 
-    // ----- SLEEP MODE -----
+    // Sleep mode (não mexe)
     if (sleepOn())
     {
         if (currentSleep)
@@ -882,35 +882,21 @@ else if (pb1st.wasClicked || pb1st.wasShortPressed)
         }
     }
 
-    // ----- MENU HANDLERS -----
-    else if (clickHandler(currentCmd, pb1st.wasShortPressed))
+    // Click normal → abre menu (COMPORTAMENTO ORIGINAL)
+    else if (pb1st.wasClicked && !pb1st.wasShortPressed)
     {
-        needRedraw = true;
-        elapsedSleep = elapsedCommand = currentTime = millis();
-    }
-
-    // ----- EXIT MODAL MODES -----
-    else if (currentCmd != CMD_NONE)
-    {
-        currentCmd = CMD_NONE;
+        currentCmd = CMD_MENU;
         needRedraw = true;
     }
 
-    // ----- SHORT PRESS = ALTERNAR ENTRE VOLUME ↔ FREQUÊNCIA -----
+    // Short press → alterna volume/frequência (NOVA FUNÇÃO)
     else if (pb1st.wasShortPressed)
     {
         if (currentCmd == CMD_FREQ)
-            currentCmd = CMD_NONE;      // volta ao volume (padrão)
+            currentCmd = CMD_NONE;      // volta pro volume
         else
-            currentCmd = CMD_FREQ;      // entra no modo frequência
+            currentCmd = CMD_FREQ;      // vai pra frequência
 
-        needRedraw = true;
-    }
-
-    // ----- CLICK = MENU (COMPORTAMENTO ORIGINAL) -----
-    else if (pb1st.wasClicked)
-    {
-        currentCmd = CMD_MENU;
         needRedraw = true;
     }
 }
