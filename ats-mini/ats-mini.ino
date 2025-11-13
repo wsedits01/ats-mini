@@ -861,10 +861,9 @@ void loop()
     }
 else if (pb1st.wasClicked || pb1st.wasShortPressed)
 {
-    // Encoder click or short press
     elapsedSleep = elapsedCommand = currentTime;
 
-    // Locked/unlocked sleep mode
+    // ----- SLEEP MODE -----
     if (sleepOn())
     {
         if (currentSleep)
@@ -883,12 +882,38 @@ else if (pb1st.wasClicked || pb1st.wasShortPressed)
         }
     }
 
-    // Try existing click handlers (menu items, remote actions, etc.)
+    // ----- MENU HANDLERS -----
     else if (clickHandler(currentCmd, pb1st.wasShortPressed))
     {
         needRedraw = true;
         elapsedSleep = elapsedCommand = currentTime = millis();
     }
+
+    // ----- EXIT MODAL MODES -----
+    else if (currentCmd != CMD_NONE)
+    {
+        currentCmd = CMD_NONE;
+        needRedraw = true;
+    }
+
+    // ----- SHORT PRESS = ALTERNAR ENTRE VOLUME ↔ FREQUÊNCIA -----
+    else if (pb1st.wasShortPressed)
+    {
+        if (currentCmd == CMD_FREQ)
+            currentCmd = CMD_NONE;      // volta ao volume (padrão)
+        else
+            currentCmd = CMD_FREQ;      // entra no modo frequência
+
+        needRedraw = true;
+    }
+
+    // ----- CLICK = MENU (COMPORTAMENTO ORIGINAL) -----
+    else if (pb1st.wasClicked)
+    {
+        currentCmd = CMD_MENU;
+        needRedraw = true;
+    }
+}
 
     // Deactivate modal command
     else if (currentCmd != CMD_NONE)
